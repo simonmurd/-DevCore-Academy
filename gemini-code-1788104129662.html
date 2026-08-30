@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD Interaktif: Simulator Futuristik</title>
+    <style>
+        /* Import Font Modern, Minimalis & Futuristik */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Space+Grotesk:wght@500;700&family=Fira+Code:wght@400;500&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            color: #212529;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            padding: 15px 30px;
+            border-bottom: 1px solid #e9ecef;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        header h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #007bff, #00d2ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .badge {
+            background: #ffffff;
+            color: #007bff;
+            border: 1px solid #00d2ff;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.1);
+            letter-spacing: 0.5px;
+        }
+
+        .workspace {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+            overflow: hidden;
+            background-image: radial-gradient(#dee2e6 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .panel {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #e9ecef;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .panel:hover {
+            box-shadow: 0 12px 40px rgba(0, 123, 255, 0.08);
+            border-color: #80bdff;
+        }
+
+        .panel-header {
+            padding: 15px 25px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            font-weight: 700;
+            font-size: 1.05rem;
+            font-family: 'Space Grotesk', sans-serif;
+            color: #495057;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .instruction-panel {
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .instruction-content {
+            padding: 25px;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: #495057;
+        }
+
+        .instruction-content h3 {
+            margin-bottom: 15px;
+            color: #007bff;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .instruction-content p {
+            margin-bottom: 15px;
+        }
+
+        .task-box {
+            background: rgba(0, 123, 255, 0.05);
+            border-left: 4px solid #007bff;
+            border-radius: 0 8px 8px 0;
+            padding: 15px;
+            margin-top: 20px;
+            color: #212529;
+            font-size: 0.9rem;
+        }
+
+        .editor-panel {
+            flex: 1.2;
+        }
+
+        textarea {
+            flex: 1;
+            width: 100%;
+            border: none;
+            resize: none;
+            padding: 20px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            background-color: #f1f3f5;
+            color: #212529;
+            outline: none;
+            line-height: 1.6;
+            white-space: pre;
+            overflow-x: auto;
+            transition: background-color 0.2s ease;
+        }
+
+        textarea:focus {
+            background-color: #ffffff;
+            box-shadow: inset 0 0 0 2px #007bff;
+        }
+
+        .action-bar {
+            padding: 12px 25px;
+            background: #ffffff;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        button.btn-run {
+            background: linear-gradient(135deg, #007bff 0%, #00d2ff 100%);
+            color: #ffffff;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        }
+
+        button.btn-run:hover {
+            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .preview-panel {
+            flex: 1;
+        }
+
+        iframe {
+            flex: 1;
+            width: 100%;
+            border: none;
+            background-color: #ffffff;
+        }
+        
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f8f9fa; }
+        ::-webkit-scrollbar-thumb { background: #ced4da; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #adb5bd; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>⚡ CodeQuest: NEXUS</h1>
+        <div class="badge">🚀 Misi: Simulator (Modul 5)</div>
+    </header>
+
+    <div class="workspace">
+        
+        <div class="panel instruction-panel">
+            <div class="panel-header">📜 Modul Instruksi</div>
+            <div class="instruction-content">
+                <h3>Sistem Inisiasi Simulator!</h3>
+                <p>Halo, Operator! ⚡ Hari ini kita akan belajar menggunakan Variabel, Logika, dan Perulangan dengan visualisasi sistem karakter.</p>
+                <p>Di antarmuka kode sebelah kanan, terdapat 20 Tugas (🎯 TUGAS 1 - 20) yang menunggu untuk dikalibrasi agar simulasi sistem dapat berjalan dengan lancar.</p>
+                
+                <div class="task-box">
+                    <strong>🎯 Cara Mengerjakan:</strong><br>
+                    Cari tulisan <strong>🎯 TUGAS</strong> di dalam editor kode, baca instruksinya, lalu sesuaikan kode tersebut. Setelah itu, klik tombol <strong>"✨ Sinkronisasi Kode"</strong> di bawah editor, lalu klik <strong>"▶ JALANKAN KODE PROGRAM"</strong> pada layar *preview*!
+                </div>
+            </div>
+        </div>
+
+        <div class="panel editor-panel">
+            <div class="panel-header">💻 Terminal Interface</div>
+<textarea id="code-editor" spellcheck="false" wrap="off">
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- 🎯 TUGAS 1: Ubah judul tab browser di bawah ini dengan namamu -->
+    <title>Tugas Modul 5 - [NAMA SISWA]</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;600&family=Fira+Code:wght@500&display=swap" rel="stylesheet">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        /* 🎯 TUGAS 2: Ubah warna latar belakang (background) aplikasi. 
+           Ganti '#ffffff' menjadi '#f8f9fa' (abu-abu terang) atau warna hex favoritmu */
+        body {
+            background-color: #ffffff;
+            background-image: radial-gradient(rgba(0,0,0,0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            font-family: 'Inter', sans-serif;
+            color: #212529;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 🎯 TUGAS 3: Ubah warna kotak output (layar hasil).
+           Ganti '#f8f9fa' menjadi '#e0f2fe' (biru es) atau warna lain */
+        #layarOutput {
+            background-color: #f8f9fa;
+            color: #212529;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 12px 15px;
+            height: 200px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
+            font-family: 'Fira Code', monospace;
+        }
+
+        /* --- STYLING SISTEM (JANGAN DIUBAH) --- */
+        .judul-h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            color: #007bff;
+            margin-bottom: 5px;
+            text-align: center;
+            letter-spacing: -0.5px;
+        }
+        .sub-judul { margin-bottom: 15px; font-size: 0.9rem; color: #6c757d; text-align: center; }
+        
+        .rpg-frame {
+            width: 100%; max-width: 680px;
+            background: #ffffff;
+            border: 1px solid #dee2e6; border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            overflow: hidden; position: relative;
+        }
+        .tab-bar { display: flex; background: #f8f9fa; border-bottom: 1px solid #dee2e6; }
+        .tab-btn {
+            flex: 1; padding: 12px; background: transparent;
+            color: #6c757d; border: none; border-right: 1px solid #dee2e6; font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: 0.2s;
+        }
+        .tab-btn.active, .tab-btn:hover { background: #ffffff; color: #007bff; box-shadow: inset 0 -3px 0 #007bff; }
+        .hero-view { display: flex; height: 320px; position: relative; background: linear-gradient(to bottom, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.95)), url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80') center/cover; border-bottom: 1px solid #dee2e6; }
+        .equipment-column { width: 70px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(6px); padding: 10px 8px; display: flex; flex-direction: column; gap: 8px; border-right: 1px solid #dee2e6; z-index: 2; }
+        .equip-slot { height: 40px; background: #ffffff; border: 1px solid #dee2e6; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; transition: 0.2s; }
+        .equip-slot:hover { transform: scale(1.08); border-color: #007bff; }
+        .equip-slot.legendary { border-color: #007bff; background: rgba(0, 123, 255, 0.1); }
+        .character-stage { flex: 1; position: relative; display: flex; align-items: flex-end; justify-content: space-around; padding-bottom: 20px; }
+        .avatar { filter: drop-shadow(0 8px 15px rgba(0,0,0,0.15)); }
+        .mount-img { height: 160px; transform: scaleX(-1); }
+        .hero-img { height: 210px; animation: heroFloat 3s infinite ease-in-out; }
+        @keyframes heroFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        .hero-overlay-stats { position: absolute; top: 12px; right: 12px; background: rgba(255, 255, 255, 0.9); border: 1px solid #dee2e6; border-radius: 8px; padding: 8px 12px; font-size: 0.75rem; color: #212529; font-weight: 600; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .panel-content { display: none; padding: 15px; background: #ffffff; border-bottom: 1px solid #dee2e6; }
+        .panel-content.active { display: block; }
+        .class-selector { display: flex; gap: 10px; margin-top: 5px; }
+        .class-btn { flex: 1; padding: 8px; background: #f8f9fa; border: 1px solid #dee2e6; color: #495057; border-radius: 6px; cursor: pointer; font-family: 'Space Grotesk', sans-serif; font-size: 0.8rem; font-weight: 600; transition: 0.2s; }
+        .class-btn.selected { background: #007bff; color: #ffffff; border-color: #007bff; }
+        .log-section { padding: 15px; background: #f8f9fa; }
+        .sim-actions { display: grid; grid-template-columns: 2fr 1fr; gap: 8px; margin-bottom: 12px; }
+        .btn-trigger { padding: 12px; background: linear-gradient(135deg, #007bff 0%, #00d2ff 100%); color: #ffffff; border: none; border-radius: 8px; font-family: 'Space Grotesk', sans-serif; font-weight: bold; font-size: 0.9rem; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2); }
+        .btn-trigger:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3); }
+        .btn-sub { background: #ffffff; border: 1px solid #ced4da; color: #495057; box-shadow: none; }
+        .btn-sub:hover { background: #e9ecef; box-shadow: none; }
+        .log-item { animation: logPopIn 0.3s forwards; margin-bottom: 4px; padding-bottom: 4px; border-bottom: 1px dashed #e9ecef; }
+        .log-item:last-child { border-bottom: none; }
+        @keyframes logPopIn { from { opacity: 0; transform: translateX(-5px); } to { opacity: 1; transform: translateX(0); } }
+    </style>
+</head>
+<body>
+
+    <!-- 🎯 TUGAS 4: Ubah teks judul H1 ini dengan namamu -->
+    <h1 class="judul-h1">Simulator Sistem: [NAMA SISWA]</h1>
+    <p class="sub-judul">Pelajari Variabel, Logika, dan Perulangan dengan Visualisasi Modern!</p>
+
+    <div class="rpg-frame">
+        <!-- TAB NAVIGASI -->
+        <div class="tab-bar">
+            <button class="tab-btn active" onclick="bukaTab('tabAppearance', this)">Penampilan</button>
+            <button class="tab-btn" onclick="bukaTab('tabInventory', this)">Inventory</button>
+        </div>
+
+        <!-- HERO VIEW (VISUAL DISPLAY) -->
+        <div class="hero-view">
+            <div class="equipment-column">
+                <div class="equip-slot legendary" title="Senjata Utama">🗡️</div>
+                <div class="equip-slot" title="Modul Pertahanan">🛡️</div>
+                <div class="equip-slot epic" title="Headset / Helm">🪖</div>
+                <div class="equip-slot" title="Mobilitas">🐴</div>
+            </div>
+
+            <div class="character-stage">
+                <img class="avatar mount-img" src="https://api.iconify.design/noto:horse.svg" alt="Mount">
+                <img class="avatar hero-img" id="heroImg" src="https://api.iconify.design/game-icons:wizard-face.svg?color=%23007bff" alt="Hero">
+            </div>
+
+            <div class="hero-overlay-stats">
+                <div>📈 Level: <strong id="lblLevel">1</strong></div>
+                <div>❤️ HP: <strong id="lblHP">50</strong></div>
+                <div>⚡ Energi: <strong id="lblMP">20</strong></div>
+            </div>
+        </div>
+
+        <!-- PANEL TAB -->
+        <div id="tabAppearance" class="panel-content active">
+            <p style="font-size: 0.8rem; color: #6c757d; margin-bottom: 6px;">Pilih Kelas Operasi:</p>
+            <div class="class-selector">
+                <button class="class-btn selected" onclick="gantiKelas('Mage', this)">🔮 Mage</button>
+                <button class="class-btn" onclick="gantiKelas('Warrior', this)">⚔️ Warrior</button>
+                <button class="class-btn" onclick="gantiKelas('Rogue', this)">🗡️ Rogue</button>
+            </div>
+        </div>
+
+        <div id="tabInventory" class="panel-content">
+            <p style="font-size: 0.8rem; color: #007bff;">🎒 <strong>Barang di Tas:</strong> <span id="lblInventory" style="color:#495057;">Pedang Kayu, Peta</span></p>
+        </div>
+
+        <!-- LOG SIMULASI -->
+        <div class="log-section">
+            <div class="sim-actions">
+                <!-- Tombol ini belum bisa diklik sampai TUGAS 20 diselesaikan -->
+                <button id="btnMulai" class="btn-trigger">▶ JALANKAN KODE PROGRAM</button>
+                <button class="btn-trigger btn-sub" onclick="pulihkanMurni()">🧪 Reset Status</button>
+            </div>
+
+            <div id="layarOutput">
+                <em style="color: #6c757d;">Tekan "JALANKAN KODE PROGRAM" untuk melihat hasilnya di sini...</em>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // SISTEM ANTARMUKA (UI) - JANGAN DIUBAH
+        // ==========================================
+        let uiState = { kelas: "Mage" };
+
+        function bukaTab(idTab, btnEl) {
+            document.querySelectorAll('.panel-content').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(idTab).classList.add('active');
+            btnEl.classList.add('active');
+        }
+
+        function gantiKelas(kelasBaru, btnEl) {
+            uiState.kelas = kelasBaru;
+            document.querySelectorAll('.class-btn').forEach(b => b.classList.remove('selected'));
+            btnEl.classList.add('selected');
+            const img = document.getElementById('heroImg');
+            
+            // Icon hero dengan penyesuaian warna aksen biru (%23007bff)
+            if(kelasBaru === 'Mage') img.src = "https://api.iconify.design/game-icons:wizard-face.svg?color=%23007bff";
+            else if(kelasBaru === 'Warrior') img.src = "https://api.iconify.design/game-icons:knight-banner.svg?color=%23007bff";
+            else img.src = "https://api.iconify.design/game-icons:ninja-head.svg?color=%23007bff";
+        }
+
+        function cetakLog(teks) {
+            const container = document.getElementById('layarOutput');
+            const div = document.createElement('div');
+            div.className = 'log-item';
+            div.innerHTML = teks;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function pulihkanMurni() {
+            document.getElementById('layarOutput').innerHTML = "<em style='color: #6c757d;'>Status direset.</em>";
+            document.getElementById('lblLevel').innerText = "1";
+            document.getElementById('lblHP').innerText = "50";
+            document.getElementById('lblMP').innerText = "20";
+        }
+
+        // ==================================================
+        // FUNGSI UTAMA PROGRAM SISWA
+        // ==================================================
+        function jalankanSimulasi() {
+            // Bersihkan layar
+            document.getElementById('layarOutput').innerHTML = "";
+            cetakLog("<strong style='color: #007bff; font-family: Space Grotesk;'>⚡ --- MEMULAI SIMULASI ---</strong>");
+
+            // ------------------------------------------
+            // A. DEKLARASI VARIABEL & TIPE DATA
+            // ------------------------------------------
+            
+            // 🎯 TUGAS 5: TIPE DATA STRING (Teks). 
+            // Ubah nama karakter menjadi namamu sendiri!
+            let namaKarakter = "Pahlawan Tanpa Nama";
+
+            // 🎯 TUGAS 6: TIPE DATA NUMBER (Angka). 
+            // Ubah level awal dari 1 menjadi 5!
+            let level = 1;
+
+            // 🎯 TUGAS 7: TIPE DATA BOOLEAN (Benar/Salah).
+            // Ganti 'false' menjadi 'true' agar karaktermu memiliki sihir.
+            let punyaSihir = false;
+
+            // 🎯 TUGAS 8: TIPE DATA ARRAY (Daftar Data).
+            // Tambahkan 1 item lagi di dalam kurung siku, misal: "Ramuan Nyawa"
+            let tasInventory = ["Pedang Kayu", "Peta"];
+
+            // 🎯 TUGAS 9: TIPE DATA OBJECT (Data dengan Properti).
+            // Ubah nilai nyawa (hp) dari 50 menjadi 100!
+            let status = { 
+                hp: 50, 
+                energi: 20 
+            };
+
+
+            // ------------------------------------------
+            // B. OPERATOR ARITMATIKA
+            // ------------------------------------------
+            cetakLog("<br>📊 <strong>[1] Update Status (Aritmatika):</strong>");
+
+            // 🎯 TUGAS 10: PENJUMLAHAN (+)
+            // Tambahkan level karakter sebanyak 2.
+            // Ketik kode ini di baris bawah: level = level + 2;
+            
+            
+            cetakLog(`- Level <strong>${namaKarakter}</strong> sekarang: ` + level);
+
+            // 🎯 TUGAS 11: PENGURANGAN (-)
+            // Karakter diserang monster! Kurangi HP sebanyak 30.
+            // Ketik kode ini di baris bawah: status.hp = status.hp - 30;
+            
+            
+            cetakLog("- HP tersisa setelah diserang: " + status.hp);
+
+
+            // ------------------------------------------
+            // C. OPERATOR PERBANDINGAN & LOGIKA
+            // ------------------------------------------
+            
+            // 🎯 TUGAS 12: OPERATOR PERBANDINGAN (>=)
+            // Cek apakah level lebih besar atau sama dengan 5.
+            // Ubah angka 0 menjadi 5 pada kode di bawah!
+            let syaratLevelTerpenuhi = (level >= 0); 
+
+            // 🎯 TUGAS 13: OPERATOR LOGIKA AND (&&)
+            // Syarat masuk Guild: Harus level tinggi DAN punya sihir.
+            // Hapus tanda (//) pada baris kode di bawah ini:
+            // let bisaMasukGuild = (syaratLevelTerpenuhi && punyaSihir);
+
+
+            // ------------------------------------------
+            // D. PENGONDISIAN (IF/ELSE & SWITCH)
+            // ------------------------------------------
+            cetakLog("<br>⚖️ <strong>[2] Cek Kondisi (If/Else & Switch):</strong>");
+
+            // 🎯 TUGAS 14 & 15: IF / ELSE (Cek Nyawa)
+            // Hapus tanda (//) pada 5 baris di bawah ini:
+            
+            // if (status.hp > 0) {
+            //      cetakLog("- Status Vital: Karakter masih bertahan hidup!");
+            // } else {
+            //      cetakLog("- Status Vital: Karakter pingsan (HP Habis).");
+            // }
+
+            // 🎯 TUGAS 16: SWITCH (Cek Kelas Pilihan UI)
+            // (Nilai pekerjaan diambil otomatis dari kelas yang kamu klik di UI)
+            let pekerjaan = uiState.kelas; 
+            
+            switch (pekerjaan) {
+                case "Warrior":
+                    cetakLog("- Kelas: ⚔️ Warrior (Bonus Kekuatan Fisik!)");
+                    break;
+                case "Mage":
+                    cetakLog("- Kelas: 🔮 Mage (Bonus Kekuatan Sihir!)");
+                    break;
+                default:
+                    cetakLog("- Kelas: 🗡️ Rogue (Bonus Kecepatan!)");
+            }
+
+
+            // ------------------------------------------
+            // E. PERULANGAN (FOR, WHILE, FOREACH)
+            // ------------------------------------------
+            cetakLog("<br>🔄 <strong>[3] Aktivitas (Perulangan):</strong>");
+
+            // 🎯 TUGAS 17: PERULANGAN FOR
+            // Mengayunkan pedang 3 kali. 
+            // Ubah angka 3 menjadi 5 agar latihannya lebih banyak!
+            for (let i = 1; i <= 3; i++) {
+                cetakLog("&nbsp;&nbsp;⚔️ Swing! Ayunan pedang ke-" + i);
+            }
+
+            // 🎯 TUGAS 18: PERULANGAN WHILE
+            // Selama energi > 0, lari menghabiskan 10 energi.
+            // Hapus tanda (//) pada blok while di bawah ini!
+            
+            // while (status.energi > 0) {
+            //      cetakLog("&nbsp;&nbsp;🏃 Berlari... (Sisa Energi: " + status.energi + ")");
+            //      status.energi -= 10;
+            // }
+
+            // 🎯 TUGAS 19: PERULANGAN FOREACH (Cek Isi Tas)
+            // Hapus tanda (//) pada blok forEach di bawah ini!
+            cetakLog("<br>🎒 <strong>[4] Isi Tas Inventory:</strong>");
+            
+            // tasInventory.forEach(function(barang, urutan) {
+            //      let nomor = urutan + 1;
+            //      cetakLog(`&nbsp;&nbsp;[${nomor}] ${barang}`);
+            // });
+
+            cetakLog("<br><strong style='color: #007bff; font-family: Space Grotesk;'>⚡ --- SIMULASI SELESAI ---</strong>");
+
+            // --- SINKRONISASI VISUAL UI (Otomatis) ---
+            // Kode ini memperbarui angka di gambar profil berdasarkan variabelmu di atas!
+            document.getElementById('lblLevel').innerText = level;
+            document.getElementById('lblHP').innerText = status.hp;
+            document.getElementById('lblMP').innerText = status.energi;
+            document.getElementById('lblInventory').innerText = tasInventory.join(", ");
+        }
+
+        // ------------------------------------------
+        // F. MENGHUBUNGKAN TOMBOL (EVENT LISTENER)
+        // ------------------------------------------
+        
+        // 🎯 TUGAS 20: EVENT LISTENER
+        // Tombol saat ini belum berfungsi! 
+        // Hapus tanda (//) pada baris kode di bawah ini agar tombol merespon saat diklik:
+
+        // document.getElementById('btnMulai').addEventListener('click', jalankanSimulasi);
+
+    </script>
+</body>
+</html>
+</textarea>
+            <div class="action-bar">
+                <button class="btn-run" onclick="runCode()">✨ Sinkronisasi Kode</button>
+            </div>
+        </div>
+
+        <div class="panel preview-panel">
+            <div class="panel-header">🎮 Output Sistem</div>
+            <iframe id="preview-frame"></iframe>
+        </div>
+
+    </div>
+
+    <script>
+        let urlAktif = null;
+
+        function runCode() {
+            const htmlCode = document.getElementById('code-editor').value;
+            const iframe = document.getElementById('preview-frame');
+            
+            const blob = new Blob([htmlCode], { type: 'text/html;charset=utf-8' });
+            
+            if (urlAktif) {
+                URL.revokeObjectURL(urlAktif);
+            }
+            
+            urlAktif = URL.createObjectURL(blob);
+            iframe.src = urlAktif;
+        }
+
+        const editor = document.getElementById('code-editor');
+        editor.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+
+                this.value = this.value.substring(0, start) + "    " + this.value.substring(end);
+                this.selectionStart = this.selectionEnd = start + 4;
+            }
+        });
+
+        window.onload = runCode;
+    </script>
+
+</body>
+</html>
