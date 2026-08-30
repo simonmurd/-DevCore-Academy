@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD Interaktif: Karya Pemandangan</title>
+    <style>
+        /* Import Font Modern & Friendly */
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&family=Fira+Code:wght@400;500&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f8f9fc;
+            color: #2d3748;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            box-shadow: 0 4px 30px rgba(0, 150, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        header h1 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #1a202c;
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .badge {
+            background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+            color: #0369a1;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            box-shadow: 0 2px 10px rgba(0, 114, 255, 0.1);
+        }
+
+        .workspace {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+            overflow: hidden;
+        }
+
+        .panel {
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(0, 150, 255, 0.04);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #f1f5f9;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .panel:hover {
+            box-shadow: 0 15px 50px rgba(0, 150, 255, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .panel-header {
+            padding: 15px 25px;
+            background: #ffffff;
+            border-bottom: 2px dashed #f1f5f9;
+            font-weight: 800;
+            font-size: 1.05rem;
+            color: #4a5568;
+        }
+
+        .instruction-panel {
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .instruction-content {
+            padding: 25px;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        .instruction-content h3 {
+            margin-bottom: 15px;
+            color: #2b6cb0;
+        }
+
+        .instruction-content p {
+            margin-bottom: 15px;
+            color: #4a5568;
+        }
+
+        .task-box {
+            background: #f0fdf4;
+            border-left: 4px solid #4ade80;
+            padding: 15px;
+            border-radius: 0 12px 12px 0;
+            margin-top: 20px;
+        }
+
+        .editor-panel {
+            flex: 1.2;
+        }
+
+        textarea {
+            flex: 1;
+            width: 100%;
+            border: none;
+            resize: none;
+            padding: 25px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95rem;
+            background-color: #fafbfc;
+            color: #1e293b;
+            outline: none;
+            line-height: 1.6;
+        }
+
+        textarea:focus {
+            background-color: #ffffff;
+            box-shadow: inset 0 0 0 2px #e0f2fe;
+        }
+
+        .action-bar {
+            padding: 15px 25px;
+            background: #ffffff;
+            border-top: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        button {
+            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 800;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(79, 172, 254, 0.3);
+        }
+
+        button:hover {
+            box-shadow: 0 12px 25px rgba(79, 172, 254, 0.5);
+            transform: translateY(-3px) scale(1.02);
+        }
+
+        .preview-panel {
+            flex: 1;
+        }
+
+        iframe {
+            flex: 1;
+            width: 100%;
+            border: none;
+            background-color: #ffffff;
+        }
+        
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>CodeQuest: Canvas Edition</h1>
+        <div class="badge">🎨 Misi: Menggambar Pemandangan</div>
+    </header>
+
+    <div class="workspace">
+        
+        <div class="panel instruction-panel">
+            <div class="panel-header">👋 Misi Kamu Hari Ini</div>
+            <div class="instruction-content">
+                <h3>Melukis dengan Kode!</h3>
+                <p>Halo, Seniman Digital! 🖌️ Hari ini kita akan menggunakan JavaScript dan HTML Canvas untuk menggambar sebuah pemandangan alam lengkap dengan rumah dan matahari.</p>
+                <p>Di editor kode sebelah kanan, terdapat 20 Tugas (🎯 TUGAS 1 - 20) yang menunggu untuk kamu selesaikan.</p>
+                
+                <div class="task-box">
+                    <strong>🎯 Cara Mengerjakan:</strong><br>
+                    Cari tulisan <strong>🎯 TUGAS</strong> di dalam editor kode, baca instruksinya, lalu ubah nilai atau kodenya. Setelah itu, klik tombol "✨ Jalankan Kode" untuk melihat hasil lukisanmu!
+                </div>
+            </div>
+        </div>
+
+        <div class="panel editor-panel">
+            <div class="panel-header">💻 Area Coding</div>
+<textarea id="code-editor" spellcheck="false">
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <title>Tugas Web 2 - [NAMA SISWA]</title>
+    
+    <style>
+        /* 🎯 TUGAS 2: Ubah warna latar belakang (background) luar canvas. 
+           Coba ganti '#2c3e50' (biru gelap) menjadi 'black' atau '#111' */
+        body {
+            background-color: #2c3e50; 
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+
+        /* 🎯 TUGAS 3: Ubah warna teks judul utama (h1) 
+           Ganti 'white' menjadi warna yang terang, misalnya 'yellow' atau 'cyan' */
+        h1 {
+            color: white; 
+        }
+
+        /* 🎯 TUGAS 4: Ubah warna dan ketebalan bingkai (border) canvas.
+           Ganti '2px solid white' menjadi '5px solid yellow' atau gayamu sendiri */
+        canvas {
+            border: 2px solid white; 
+            margin-top: 20px;
+            box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Pemandangan Malam: [NAMA SISWA]</h1>
+
+    <canvas id="kanvasMalam" width="600" height="400"></canvas>
+
+    <script>
+        const canvas = document.getElementById('kanvasMalam');
+        const ctx = canvas.getContext('2d');
+
+        // ==========================================
+        // BAGIAN 1: MENGGAMBAR LANGIT MALAM
+        // ==========================================
+        
+        // 🎯 TUGAS 7: Ubah warna langit malam. 
+        // Ganti 'blue' menjadi 'midnightblue' atau '#000033'
+        ctx.fillStyle = 'blue'; 
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+
+        // ==========================================
+        // BAGIAN 2: MENGGAMBAR BULAN
+        // ==========================================
+        
+        ctx.beginPath();
+        
+        // 🎯 TUGAS 8: Pindahkan posisi bulan ke kanan atas!
+        // Ganti X (150) menjadi 650, dan Y (150) menjadi 80
+        let posisiX_Bulan = 150;
+        let posisiY_Bulan = 150;
+        
+        // 🎯 TUGAS 9: Bulannya terlalu kecil! Ubah ukuran (radius) dari 30 menjadi 50
+        let radiusBulan = 30;
+        
+        ctx.arc(posisiX_Bulan, posisiY_Bulan, radiusBulan, 0, Math.PI * 2);
+        
+        // 🎯 TUGAS 10: Beri warna bulan. Ganti 'gray' menjadi 'lightyellow' atau 'white'
+        ctx.fillStyle = 'gray'; 
+        ctx.fill();
+        
+        // 🎯 TUGAS 11: Beri ketebalan garis tepi bulan (cahaya bulan). 
+        // Ubah lineWidth dari 0 menjadi 8
+        ctx.lineWidth = 0; 
+        
+        // 🎯 TUGAS 12: Ubah warna garis tepi bulan menjadi 'rgba(255, 255, 0, 0.5)' agar terlihat seperti efek cahaya
+        ctx.strokeStyle = 'black'; 
+        ctx.stroke();
+
+
+        // ==========================================
+        // BAGIAN 3: MENGGAMBAR BINTANG (LOOPING / PERULANGAN)
+        // ==========================================
+        
+        // 🎯 TUGAS 13: Ubah warna bintang dari 'red' menjadi 'white'
+        ctx.fillStyle = 'red';
+
+        // 🎯 TUGAS 14: Langitnya sepi! Mari buat banyak bintang.
+        // Ubah angka 10 di bawah ini menjadi 150 agar ada 150 bintang di langit!
+        let jumlahBintang = 10; 
+
+        for (let i = 0; i < jumlahBintang; i++) {
+            let x = Math.random() * canvas.width;
+            let y = Math.random() * (canvas.height - 100); 
+            
+            // 🎯 TUGAS 15: Bintangnya terlalu besar! Ubah ukuran maksimal menjadi 2 atau 3
+            let ukuranBintang = Math.random() * 8; 
+            
+            ctx.fillRect(x, y, ukuranBintang, ukuranBintang);
+        }
+
+
+        // ==========================================
+        // BAGIAN 4: MENGGAMBAR TANAH / BUKIT
+        // ==========================================
+        
+        // 🎯 TUGAS 16: Ubah warna tanah. Ganti 'brown' menjadi 'darkgreen' atau '#0b3303'
+        ctx.fillStyle = 'brown'; 
+        ctx.fillRect(0, canvas.height - 100, canvas.width, 100);
+
+
+        // ==========================================
+        // BAGIAN 5: MEMBUAT FUNGSI POHON PINUS
+        // ==========================================
+        
+        // Ini adalah cetakan (Fungsi) untuk membuat pohon. 
+        function gambarPohon(x, y) {
+            // Batang pohon
+            ctx.fillStyle = '#3e2723'; // Warna coklat tua
+            ctx.fillRect(x - 10, y, 20, 40);
+
+            // Daun pohon (Segitiga)
+            // 🎯 TUGAS 17: Ubah warna daun! Ganti 'lightgreen' menjadi 'forestgreen'
+            ctx.fillStyle = 'lightgreen';
+            ctx.beginPath();
+            ctx.moveTo(x - 30, y);           // Kiri
+            ctx.lineTo(x, y - 60);           // Atas
+            ctx.lineTo(x + 30, y);           // Kanan
+            ctx.fill();
+        }
+
+
+        // ==========================================
+        // BAGIAN 6: MENGGUNAKAN FUNGSI POHON
+        // ==========================================
+        
+        // 🎯 TUGAS 18: Panggil fungsi pohon! 
+        // Hapus tanda garis miring ganda (//) di bawah ini agar pohonnya muncul
+        
+        // gambarPohon(150, canvas.height - 100);
+        // gambarPohon(250, canvas.height - 90);
+        
+        // 🎯 TUGAS 19: Hutan masih sepi! Ketik kode di bawah ini untuk menanam 3 pohon lagi.
+        // Contoh: gambarPohon(400, canvas.height - 100);
+        
+        // KETIK KODEMU DI SINI:
+        
+
+        // ==========================================
+        // BAGIAN 7: MENAMBAHKAN TANDA TANGAN
+        // ==========================================
+
+        // 🎯 TUGAS 20: Tulis namamu di pojok kiri atas!
+        // Ubah warna 'black' jadi 'white', lalu ubah "Nama Siswa" jadi namamu.
+        ctx.fillStyle = 'black'; 
+        ctx.font = '20px Arial'; 
+        ctx.fillText("Karya: Nama Siswa", 20, 40);
+
+    </script>
+</body>
+</html>
+</textarea>
+            <div class="action-bar">
+                <button onclick="runCode()">✨ Jalankan Kode</button>
+            </div>
+        </div>
+
+        <div class="panel preview-panel">
+            <div class="panel-header">🎮 Hasil Karyamu</div>
+            <iframe id="preview-frame"></iframe>
+        </div>
+
+    </div>
+
+    <script>
+        function runCode() {
+            // Ambil teks dari editor
+            const htmlCode = document.getElementById('code-editor').value;
+            
+            // Ambil elemen iframe
+            const iframe = document.getElementById('preview-frame');
+            
+            // Ubah teks HTML menjadi file web virtual (Blob)
+            const blob = new Blob([htmlCode], { type: 'text/html' });
+            
+            // Suapkan URL file virtual tersebut ke dalam iframe
+            iframe.src = URL.createObjectURL(blob);
+        }
+
+        // Jalankan kode secara otomatis saat halaman pertama kali dimuat
+        window.onload = runCode;
+    </script>
+
+</body>
+</html>
