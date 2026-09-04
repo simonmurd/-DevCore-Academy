@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LKPD Interaktif: Karya Pemandangan</title>
+    <title>LKPD Interaktif: Karya Pemandangan Malam</title>
     <style>
         /* Import Font Modern & Friendly */
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&family=Fira+Code:wght@400;500&display=swap');
@@ -19,6 +19,7 @@
             background-color: #f8f9fc;
             color: #2d3748;
             height: 100vh;
+            height: 100dvh; /* Menggunakan Dynamic Viewport Height untuk HP */
             display: flex;
             flex-direction: column;
         }
@@ -26,7 +27,7 @@
         header {
             background-color: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(10px);
-            padding: 15px 30px;
+            padding: 12px 25px;
             box-shadow: 0 4px 30px rgba(0, 150, 255, 0.05);
             display: flex;
             justify-content: space-between;
@@ -35,7 +36,7 @@
         }
 
         header h1 {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 800;
             color: #1a202c;
             background: linear-gradient(135deg, #00c6ff, #0072ff);
@@ -46,11 +47,44 @@
         .badge {
             background: linear-gradient(135deg, #e0f2fe, #bae6fd);
             color: #0369a1;
-            padding: 8px 20px;
+            padding: 6px 16px;
             border-radius: 30px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 800;
             box-shadow: 0 2px 10px rgba(0, 114, 255, 0.1);
+        }
+
+        /* Navigasi Tab khusus Layar HP */
+        .mobile-tabs {
+            display: none;
+            background: #ffffff;
+            padding: 8px 12px;
+            gap: 8px;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            background: #f1f5f9;
+            color: #475569;
+            border-radius: 12px;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);
         }
 
         .workspace {
@@ -63,7 +97,7 @@
 
         .panel {
             background: #ffffff;
-            border-radius: 24px;
+            border-radius: 20px;
             box-shadow: 0 10px 40px rgba(0, 150, 255, 0.04);
             display: flex;
             flex-direction: column;
@@ -72,18 +106,16 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .panel:hover {
-            box-shadow: 0 15px 50px rgba(0, 150, 255, 0.08);
-            transform: translateY(-2px);
-        }
-
         .panel-header {
-            padding: 15px 25px;
+            padding: 12px 20px;
             background: #ffffff;
             border-bottom: 2px dashed #f1f5f9;
             font-weight: 800;
-            font-size: 1.05rem;
+            font-size: 1rem;
             color: #4a5568;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .instruction-panel {
@@ -92,27 +124,27 @@
         }
         
         .instruction-content {
-            padding: 25px;
-            font-size: 1rem;
-            line-height: 1.7;
+            padding: 20px;
+            font-size: 0.95rem;
+            line-height: 1.6;
         }
 
         .instruction-content h3 {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             color: #2b6cb0;
         }
 
         .instruction-content p {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             color: #4a5568;
         }
 
         .task-box {
             background: #f0fdf4;
             border-left: 4px solid #4ade80;
-            padding: 15px;
-            border-radius: 0 12px 12px 0;
-            margin-top: 20px;
+            padding: 12px;
+            border-radius: 0 10px 10px 0;
+            margin-top: 15px;
         }
 
         .editor-panel {
@@ -124,13 +156,13 @@
             width: 100%;
             border: none;
             resize: none;
-            padding: 25px;
+            padding: 20px;
             font-family: 'Fira Code', monospace;
             font-size: 0.95rem;
             background-color: #fafbfc;
             color: #1e293b;
             outline: none;
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
         textarea:focus {
@@ -139,34 +171,57 @@
         }
 
         .action-bar {
-            padding: 15px 25px;
+            padding: 12px 20px;
             background: #ffffff;
             border-top: 1px solid #f1f5f9;
             display: flex;
+            gap: 10px;
             justify-content: flex-end;
         }
 
-        button {
-            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
-            color: white;
+        .btn {
             border: none;
-            padding: 12px 30px;
+            padding: 10px 20px;
             border-radius: 50px;
             font-weight: 800;
             font-family: 'Nunito', sans-serif;
-            font-size: 1rem;
+            font-size: 0.9rem;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 20px rgba(79, 172, 254, 0.3);
+            transition: all 0.2s ease;
         }
 
-        button:hover {
-            box-shadow: 0 12px 25px rgba(79, 172, 254, 0.5);
-            transform: translateY(-3px) scale(1.02);
+        .btn-run {
+            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+            color: white;
+            box-shadow: 0 6px 16px rgba(79, 172, 254, 0.3);
+        }
+
+        .btn-run:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 172, 254, 0.4);
+        }
+
+        .btn-reset {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .btn-reset:hover {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .btn-fullscreen {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 4px 12px;
+            font-size: 0.8rem;
+            border-radius: 8px;
         }
 
         .preview-panel {
             flex: 1;
+            position: relative;
         }
 
         iframe {
@@ -175,8 +230,70 @@
             border: none;
             background-color: #ffffff;
         }
-        
-        ::-webkit-scrollbar { width: 10px; }
+
+        /* Modal Layar Penuh (Fullscreen) Preview */
+        .preview-panel.fullscreen-mode {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 999;
+            border-radius: 0;
+        }
+
+        /* ==========================================
+           RESPONSIF KHUSUS TAMPILAN HP (MOBILE)
+           ========================================== */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 6px;
+                text-align: center;
+                padding: 10px;
+            }
+
+            header h1 {
+                font-size: 1.1rem;
+            }
+
+            .mobile-tabs {
+                display: flex;
+            }
+
+            .workspace {
+                flex-direction: column;
+                padding: 10px;
+                gap: 0;
+                height: calc(100dvh - 120px);
+            }
+
+            .panel {
+                display: none;
+                height: 100%;
+                border-radius: 16px;
+            }
+
+            .panel.active-tab {
+                display: flex;
+            }
+
+            /* Mencegah Auto-Zoom Browser pada HP */
+            textarea {
+                font-size: 16px !important;
+                padding: 15px;
+            }
+
+            .action-bar {
+                padding: 10px;
+            }
+
+            .btn-run {
+                flex: 1;
+            }
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
@@ -186,29 +303,66 @@
 
     <header>
         <h1>CodeQuest: Canvas Edition</h1>
-        <div class="badge">🎨 Misi: Menggambar Pemandangan</div>
+        <div class="badge">🎨 Misi: Pemandangan Malam</div>
     </header>
+
+    <!-- Navigasi Tab Khusus Layar HP -->
+    <div class="mobile-tabs">
+        <button id="tab-btn-instruction" class="tab-btn active" onclick="switchTab('instruction')">📖 Instruksi</button>
+        <button id="tab-btn-editor" class="tab-btn" onclick="switchTab('editor')">💻 Editor</button>
+        <button id="tab-btn-preview" class="tab-btn" onclick="switchTab('preview')">🎮 Hasil</button>
+    </div>
 
     <div class="workspace">
         
-        <div class="panel instruction-panel">
+        <!-- Panel 1: Instruksi -->
+        <div id="panel-instruction" class="panel instruction-panel active-tab">
             <div class="panel-header">👋 Misi Kamu Hari Ini</div>
             <div class="instruction-content">
                 <h3>Melukis dengan Kode!</h3>
-                <p>Halo, Seniman Digital! 🖌️ Hari ini kita akan menggunakan JavaScript dan HTML Canvas untuk menggambar sebuah pemandangan alam lengkap dengan rumah dan matahari.</p>
-                <p>Di editor kode sebelah kanan, terdapat 20 Tugas (🎯 TUGAS 1 - 20) yang menunggu untuk kamu selesaikan.</p>
+                <p>Halo, Seniman Digital! 🖌️ Hari ini kita akan menggunakan JavaScript dan HTML Canvas untuk menggambar pemandangan malam hari lengkap dengan bulan, bintang, dan pepohonan.</p>
+                <p>Di editor kode, terdapat tantangan (🎯 TUGAS 2 - 20) yang menunggu untuk kamu selesaikan.</p>
                 
                 <div class="task-box">
                     <strong>🎯 Cara Mengerjakan:</strong><br>
-                    Cari tulisan <strong>🎯 TUGAS</strong> di dalam editor kode, baca instruksinya, lalu ubah nilai atau kodenya. Setelah itu, klik tombol "✨ Jalankan Kode" untuk melihat hasil lukisanmu!
+                    Cari tulisan <strong>🎯 TUGAS</strong> di dalam editor kode, baca instruksinya, lalu ubah nilai atau kodenya. Setelah itu, klik tombol "✨ Jalankan Kode" (atau tekan Ctrl+Enter) untuk melihat hasilnya!
                 </div>
             </div>
         </div>
 
-        <div class="panel editor-panel">
-            <div class="panel-header">💻 Area Coding</div>
-<textarea id="code-editor" spellcheck="false">
-<!DOCTYPE html>
+        <!-- Panel 2: Editor Kode -->
+        <div id="panel-editor" class="panel editor-panel">
+            <div class="panel-header">
+                <span>💻 Area Coding</span>
+                <span style="font-size: 0.75rem; color: #94a3b8; font-weight: normal;">💾 Otomatis Tersimpan</span>
+            </div>
+
+            <!-- Atribut Khusus Mengetik Nyaman di HP -->
+            <textarea id="code-editor" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off"></textarea>
+            
+            <div class="action-bar">
+                <button class="btn btn-reset" onclick="resetCode()" title="Kembalikan kode ke awal">🔄 Reset</button>
+                <button class="btn btn-run" onclick="handleRunClick()">✨ Jalankan Kode</button>
+            </div>
+        </div>
+
+        <!-- Panel 3: Preview Hasil -->
+        <div id="panel-preview" class="panel preview-panel">
+            <div class="panel-header">
+                <span>🎮 Hasil Karyamu</span>
+                <button class="btn btn-fullscreen" onclick="toggleFullscreen()">⛶ Layar Penuh</button>
+            </div>
+            <iframe id="preview-frame"></iframe>
+        </div>
+
+    </div>
+
+    <script>
+        const editor = document.getElementById('code-editor');
+        const STORAGE_KEY = 'codequest_canvas_saved_code';
+
+        // Templat Kode Bawaan Awal (Materi Pemandangan Malam)
+        const defaultCode = `<!DOCTYPE html>
 <html lang="id">
 <head>
     <title>Tugas Web 2 - [NAMA SISWA]</title>
@@ -234,6 +388,8 @@
             border: 2px solid white; 
             margin-top: 20px;
             box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.2);
+            max-width: 100%; /* Agar canvas tidak meluber di layar HP */
+            height: auto;
         }
     </style>
 </head>
@@ -364,39 +520,92 @@
         ctx.font = '20px Arial'; 
         ctx.fillText("Karya: Nama Siswa", 20, 40);
 
-    </script>
+    <\/script>
 </body>
-</html>
-</textarea>
-            <div class="action-bar">
-                <button onclick="runCode()">✨ Jalankan Kode</button>
-            </div>
-        </div>
+</html>`;
 
-        <div class="panel preview-panel">
-            <div class="panel-header">🎮 Hasil Karyamu</div>
-            <iframe id="preview-frame"></iframe>
-        </div>
-
-    </div>
-
-    <script>
-        function runCode() {
-            // Ambil teks dari editor
-            const htmlCode = document.getElementById('code-editor').value;
-            
-            // Ambil elemen iframe
-            const iframe = document.getElementById('preview-frame');
-            
-            // Ubah teks HTML menjadi file web virtual (Blob)
-            const blob = new Blob([htmlCode], { type: 'text/html' });
-            
-            // Suapkan URL file virtual tersebut ke dalam iframe
-            iframe.src = URL.createObjectURL(blob);
+        // Load Kode dari LocalStorage atau Gunakan Templat Bawaan
+        function loadSavedCode() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            editor.value = saved ? saved : defaultCode;
         }
 
-        // Jalankan kode secara otomatis saat halaman pertama kali dimuat
-        window.onload = runCode;
+        // Fungsi Memuat Hasil Kode ke dalam Iframe
+        function runCode() {
+            const htmlCode = editor.value;
+            const iframe = document.getElementById('preview-frame');
+            const blob = new Blob([htmlCode], { type: 'text/html' });
+            iframe.src = URL.createObjectURL(blob);
+            
+            // Simpan Otomatis ke LocalStorage
+            localStorage.setItem(STORAGE_KEY, htmlCode);
+        }
+
+        // Tombol Reset Kode ke Bawaan Awal
+        function resetCode() {
+            if (confirm('Apakah kamu yakin ingin mengembalikan kode ke awal? Semua perubahanmu akan direset.')) {
+                editor.value = defaultCode;
+                localStorage.removeItem(STORAGE_KEY);
+                runCode();
+            }
+        }
+
+        // Eksekusi Tombol Jalankan Kode (+ Otomatis Pindah Tab di HP)
+        function handleRunClick() {
+            runCode();
+            if (window.innerWidth <= 768) {
+                switchTab('preview');
+            }
+        }
+
+        // Fungsi Navigasi Tab Khusus Layar HP
+        function switchTab(tabName) {
+            const buttons = document.querySelectorAll('.tab-btn');
+            const panels = document.querySelectorAll('.panel');
+
+            buttons.forEach(btn => btn.classList.remove('active'));
+            panels.forEach(panel => panel.classList.remove('active-tab'));
+
+            const activeBtn = document.getElementById('tab-btn-' + tabName);
+            const activePanel = document.getElementById('panel-' + tabName);
+
+            if (activeBtn) activeBtn.classList.add('active');
+            if (activePanel) activePanel.classList.add('active-tab');
+
+            if (tabName === 'preview') runCode();
+        }
+
+        // Fitur Layar Penuh (Fullscreen) untuk Panel Hasil
+        function toggleFullscreen() {
+            const previewPanel = document.getElementById('panel-preview');
+            previewPanel.classList.toggle('fullscreen-mode');
+        }
+
+        // Penanganan Keyboard (Indentasi Tab & Shortcut Ctrl+Enter)
+        editor.addEventListener('keydown', function(e) {
+            // Fitur Indentasi Tombol Tab
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+
+                // Masukkan 2 spasi
+                this.value = this.value.substring(0, start) + "  " + this.value.substring(end);
+                this.selectionStart = this.selectionEnd = start + 2;
+            }
+
+            // Shortcut Ctrl + Enter atau Cmd + Enter
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                handleRunClick();
+            }
+        });
+
+        // Inisialisasi Pertama Saat Halaman Dimuat
+        window.onload = function() {
+            loadSavedCode();
+            runCode();
+        };
     </script>
 
 </body>
