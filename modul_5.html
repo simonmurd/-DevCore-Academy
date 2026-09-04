@@ -294,17 +294,56 @@
             font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: 0.2s;
         }
         .tab-btn.active, .tab-btn:hover { background: #ffffff; color: #007bff; box-shadow: inset 0 -3px 0 #007bff; }
-        .hero-view { display: flex; height: 320px; position: relative; background: linear-gradient(to bottom, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.95)), url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80') center/cover; border-bottom: 1px solid #dee2e6; }
-        .equipment-column { width: 70px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(6px); padding: 10px 8px; display: flex; flex-direction: column; gap: 8px; border-right: 1px solid #dee2e6; z-index: 2; }
-        .equip-slot { height: 40px; background: #ffffff; border: 1px solid #dee2e6; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; transition: 0.2s; }
-        .equip-slot:hover { transform: scale(1.08); border-color: #007bff; }
-        .equip-slot.legendary { border-color: #007bff; background: rgba(0, 123, 255, 0.1); }
+        
+        /* GAYA TRAVIAN UNTUK AREA HERO VIEW */
+        .hero-view { 
+            display: flex; height: 320px; position: relative; 
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.8)), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80') center/cover; 
+            border-bottom: 2px solid #8b5a2b; 
+        }
+        .equipment-column { 
+            width: 70px; 
+            background: rgba(222, 184, 135, 0.9); 
+            padding: 35px 8px 10px 8px; 
+            display: flex; flex-direction: column; gap: 8px; 
+            border-right: 2px solid #8b5a2b; 
+            z-index: 2; 
+        }
+        .equip-slot { 
+            height: 40px; 
+            background: #fff8dc; 
+            border: 2px inset #d2b48c; 
+            border-radius: 4px; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 1.2rem; cursor: pointer; transition: 0.2s; 
+        }
+        .equip-slot:hover { border-color: #8b5a2b; }
+        .equip-slot.legendary { border-color: #8b5a2b; background: #ffe4b5; }
+        
         .character-stage { flex: 1; position: relative; display: flex; align-items: flex-end; justify-content: space-around; padding-bottom: 20px; }
         .avatar { filter: drop-shadow(0 8px 15px rgba(0,0,0,0.15)); }
         .mount-img { height: 160px; transform: scaleX(-1); }
         .hero-img { height: 210px; animation: heroFloat 3s infinite ease-in-out; }
         @keyframes heroFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-        .hero-overlay-stats { position: absolute; top: 12px; right: 12px; background: rgba(255, 255, 255, 0.9); border: 1px solid #dee2e6; border-radius: 8px; padding: 8px 12px; font-size: 0.75rem; color: #212529; font-weight: 600; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        
+        /* GAYA TRAVIAN UNTUK BAR STATUS HERO */
+        .hero-overlay-stats { 
+            position: absolute; 
+            top: 0; left: 0; right: 0; 
+            background: #fdf5e6; 
+            border-bottom: 2px solid #8b5a2b; 
+            border-radius: 0; 
+            padding: 8px; 
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            font-size: 0.8rem; 
+            color: #4e342e; 
+            font-weight: bold; 
+            font-family: 'Verdana', sans-serif;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
         .panel-content { display: none; padding: 15px; background: #ffffff; border-bottom: 1px solid #dee2e6; }
         .panel-content.active { display: block; }
         .class-selector { display: flex; gap: 10px; margin-top: 5px; }
